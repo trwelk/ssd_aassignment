@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+<body>
+    <div th:replace="header :: header"></div>
+
+
+<div class="container mx-auto px-6 py-16 pt-28 text-center">
+            <div class="mx-auto max-w-lg">
+            <h1 class="text-3xl font-bold text-gray-800 dark:text-white md:text-4xl">Manage your files</h1>
+
+            <p class="mt-6 text-gray-500 dark:text-gray-300">Upload and download files from in house server</p>
+
+            <div class="mx-auto mt-6 w-full max-w-sm rounded-md border bg-transparent focus-within:border-blue-400 focus-within:ring focus-within:ring-blue-300 focus-within:ring-opacity-40 dark:border-gray-700 dark:focus-within:border-blue-300">
+                <form  th:action="@{/uploadFile}"
+    th:object="${user}" method="post"
+    enctype="multipart/form-data" class="flex flex-col md:flex-row">
+                <input type="file" name="file" accept="any" placeholder="Enter your email address" class="m-1 h-10 flex-1 appearance-none border-none bg-transparent px-4 py-2 text-gray-700 placeholder-gray-400 focus:placeholder-transparent focus:outline-none focus:ring-0 dark:text-gray-200" />
+
+                <button type="submit" class="m-1 h-10 transform rounded-md bg-blue-500 px-4 py-2 text-white transition-colors duration-300 hover:bg-blue-400 focus:bg-blue-400 focus:outline-none">Upload</button>
+                </form>
+            </div>
+            </div>
+
+            <div class="mx-auto mt-28 max-w-screen-xl">
+             <div class="mx-auto mt-6 w-full max-w-sm rounded-md border bg-transparent focus-within:border-blue-400 focus-within:ring focus-within:ring-blue-300 focus-within:ring-opacity-40 dark:border-gray-700 dark:focus-within:border-blue-300">
+                <form  action="#" th:action="@{/downloadFile}" th:object="${file}" 	method="POST" class="flex flex-col md:flex-row">
+                 <input th:field="*{fileName}" class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none" type="text" placeholder="File to be Downloaded" aria-label="Full name">
+                   <button type="submit" class="m-1 h-10 transform rounded-md bg-blue-500 px-4 py-2 text-white transition-colors duration-300 hover:bg-blue-400 focus:bg-blue-400 focus:outline-none">Download the File</button>
+
+    </button></form>
+            </div>
+            </div>
+        </div>
+</body>
+</html>

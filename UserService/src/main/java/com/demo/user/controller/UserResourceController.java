@@ -32,8 +32,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.demo.user.config.HttpUnauthorizedException;
+import com.demo.user.config.PasswordGenerator;
+import com.demo.user.model.Message;
 import com.demo.user.model.User;
 import com.demo.user.model.Utility;
+import com.demo.user.service.EmailService;
+import com.demo.user.service.MessageService;
 import com.demo.user.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -49,6 +54,12 @@ public class UserResourceController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private EmailService emailService;
+	
+	@Autowired
+	private MessageService messageService;
 	
 	@Autowired
 	RestTemplate restTemplate;
@@ -114,8 +125,22 @@ public class UserResourceController {
 	}
 	
 	@PostMapping(value="/users")
-	public ResponseEntity<String> saveuser(@RequestBody User user ) {
-		user.setPassword("{bcrypt}" + new BCryptPasswordEncoder().encode(user.getPassword()));
+	public ResponseEntity<String> saveuser(@RequestBody User user, @AuthenticationPrincipal Principal auth ) {
+		User loggedUser=userService.getUserByUserName(auth.getName());
+		log.info("Ttttrwelk get users" + loggedUser.getRoleId() +auth.getName());
+
+		if(!loggedUser.getRoleId().equals("3")) {
+            throw new HttpUnauthorizedException(); 
+		}
+		PasswordGenerator passwordGenerator = new PasswordGenerator.PasswordGeneratorBuilder()
+		        .useDigits(true)
+		        .useLower(true)
+		        .useUpper(true)
+		        .build();
+		String password = passwordGenerator.generate(8);
+		emailService.getJavaMailSender();
+        emailService.sendSimpleMessage(user.getEmailId(),"PASSWORD",password);
+		user.setPassword("{bcrypt}" + new BCryptPasswordEncoder().encode(password));
 		userService.save(user);
 		return new ResponseEntity<String>(HttpStatus.CREATED);
 		
@@ -188,78 +213,34 @@ public class UserResourceController {
 		return new ResponseEntity<User>(user,HttpStatus.OK);
 	}
 	
-	
-	
-	
-	//HttpHeaders headers=new HttpHeaders();
-	//headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-	//HttpEntity httpHeaders=new HttpEntity<String>("parameters",headers);
-	//System.out.println("calling user  service  again ");
-	////going throught zuul
-	////ResponseEntity<User> utilEntity=restTemplate.exchange("http://user-service/v1/users/1",HttpMethod.GET,httpHeaders,User.class);
-	////System.out.println(utilEntity.getBody().getUserId()+"  "+utilEntity.getBody().getUserName());
-	//
-	//////going directly skipping zuul
-	////ResponseEntity<Car[]> utilEntity=restTemplate.exchange("http://car-service/cars/all",HttpMethod.GET,httpHeaders,Car[].class);
-//			
-	//ResponseEntity<Car[]> utilEntity=restTemplate.exchange("http://car-service/cars/all",HttpMethod.GET,httpHeaders,Car[].class);
-	//
-	//for(Car u:utilEntity.getBody())
-	//System.out.println(u.getId()+"  "+u.getName());	
-
-
-	//public ResponseEntity<?> getAllUtilitiesFallback(HttpServletRequest req) {
-	//	
-//		System.out.println("Utility Service running in port "+req.getLocalPort()+" and we are here in call back method");
-	//	
-////		User user=new User(1,"Sudha","user","aaaa");
-////		List<User> users=new ArrayList<User>();
-////		users.add(user);
-//						
-//		return new ResponseEntity<String>("Cannot fetch data . please retry after some time", HttpStatus.FOUND);
-	//
-	//}
-
-	//@HystrixCommand(fallbackMethod="getAllUtilitiesFallback")
-
-
-
-
-	/*String credentials = "User:bar";
-	String encodedCredentials = new String(Base64.encodeBase64(credentials.getBytes()));
-
-	HttpHeaders headers = new HttpHeaders();
-	headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-	headers.add("Authorization", "Basic " + encodedCredentials);
-
-	HttpEntity<String> request = new HttpEntity<String>(headers);
-
-	String access_token_url = "http://oauth2-service/oauth/token?grant_type=client_credentials";
-
-	
-
-
-	ResponseEntity<String> response = restTemplate.exchange(access_token_url, HttpMethod.POST, request, String.class);
-
-	
-	
-	ObjectMapper mapper = new ObjectMapper();
-	JsonNode node=null;
-	try {
-		node = mapper.readTree(response.getBody());
-	} catch (JsonMappingException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	} catch (JsonProcessingException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
+	@PostMapping(value="/messages")
+	public ResponseEntity<String> saveMessage(@RequestBody Message message ) {
+		messageService.save(message);
+		return new ResponseEntity<String>(HttpStatus.CREATED);
+		
 	}
-	String token = node.path("access_token").asText();
-	String tokenType = node.path("token_type").asText();
 	
-	HttpHeaders headers1=new HttpHeaders();
-	headers1.add("Authorization", "Bearer "+token);
-	headers1.add("content-type",MediaType.APPLICATION_JSON_VALUE);
-	HttpEntity httpHeaders=new HttpEntity<String>("parameters",headers1);
-	*/
+
+	@GetMapping(value="/messages/me")
+	public ResponseEntity<List<Message>> getMessagesByUserId(@AuthenticationPrincipal Principal auth,HttpServletRequest req) {
+		
+		log.info("inside getbyid "+auth.getName());
+		User user=userService.getUserByUserName(auth.getName());
+		log.info("User Service running in port "+req.getLocalPort());
+		
+		List<Message> messages=messageService.getMessagesByUserId(user.getUserId());
+		
+		if(messages==null) {
+			return new ResponseEntity<List<Message>>(HttpStatus.NOT_FOUND);
+		}
+		
+
+		HttpHeaders headers=new HttpHeaders();
+		headers.add("Authorization", req.getHeader("Authorization"));
+		headers.add("content-type",MediaType.APPLICATION_JSON_VALUE);
+		HttpEntity httpHeaders=new HttpEntity<String>("parameters",headers);
+		
+		return new ResponseEntity<List<Message>>(messages,HttpStatus.OK);
+	}
+	
 }

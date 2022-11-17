@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Employee</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+<body>
+    <div th:replace="header :: header"></div>
+
+<div class="container my-2" align="center">
+    <div class="container mx-auto px-6 py-16 text-center">
+        <div class="mx-auto max-w-lg">
+        <h1 class="text-3xl font-bold text-gray-800 dark:text-white lg:text-4xl"> Weslcome <span th:text="${user}"></span>!!! </h1>
+        <p class="mt-6 text-gray-500 dark:text-gray-300">with Authorities <span th:text="${role}"></span></p>
+      
+        </div>
+    </div>
+
+<div th:switch="${admin == true}">
+<div th:case="true" class="flex flex-col">
+ <button type="submit" class="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded">
+      <a th:href="@{/addnew}" class="btn btn-primary btn-sm mb-3" >Add User</a>
+ </button>
+  <div class="overflow-x-auto sm:-mx-6 lg:-mx-1 b-1">
+    <div class="py-4 inline-block min-w-full sm:px-6 lg:px-8">
+      <div class="overflow-hidden">
+        <table class="min-w-full text-center">
+          <thead class="border-b bg-gray-800">
+            <tr>
+              <th scope="col" class="text-sm font-medium text-white px-6 py-4">
+                Id
+              </th>
+              <th scope="col" class="text-sm font-medium text-white px-6 py-4">
+                user Name
+              </th>
+              <th scope="col" class="text-sm font-medium text-white px-6 py-4">
+                Email
+              </th>
+              <th scope="col" class="text-sm font-medium text-white px-6 py-4">
+                Action
+              </th>
+            </tr>
+          </thead >
+          <tbody>
+            <tr th:each="user:${allUsers}" class="bg-white border-b">
+              <td th:text="${user.userId}" class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900"></td>
+              <td th:text="${user.userName}" class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+              </td>
+              <td th:text="${user.emailId}" class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                
+              </td>
+              <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                <a th:href="@{/deleteEmployee/{id}(id=${user.userId})}"
+				class="btn btn-danger">Delete</a>
+              </td>
+            </tr>
+       
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div th:case="*"></div>
+</div>
+
+</div>
+</body>
+</html>

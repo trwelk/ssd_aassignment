@@ -16,7 +16,7 @@
 
 
 INSERT INTO USER (user_id,user_name,password,role_role_id) VALUES (
-   'sdsa', 'adssadas','sad', 'Sam','{bcrypt}$2y$12$WBcP53NiC20Gyksn2nN5SOttJWN.kdHQz71Vt7pkSQXVbcqx/trVK',2);
+   1, 'Sam','{bcrypt}$2y$12$WBcP53NiC20Gyksn2nN5SOttJWN.kdHQz71Vt7pkSQXVbcqx/trVK',2);
 
 INSERT INTO USER (user_id,user_name,password,role_role_id) VALUES (
    2, 'Gaby','{bcrypt}$2y$12$WBcP53NiC20Gyksn2nN5SOttJWN.kdHQz71Vt7pkSQXVbcqx/trVK',1); 

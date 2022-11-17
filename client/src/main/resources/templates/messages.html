@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Employee</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+<body>
+    <div th:replace="header :: header"></div>
+
+<div class="container my-2" align="center">
+    <div class="container mx-auto px-6 py-16 text-center">
+        <div class="mx-auto max-w-lg">
+        <h1 class="text-3xl font-bold text-gray-800 dark:text-white lg:text-4xl"> Welcome To Your Messages  <span th:text="${user}"></span>!!! </h1>
+        <p class="mt-6 text-gray-500 dark:text-gray-300">with Authorities <span th:text="${role}"></span></p>
+      
+        </div>
+    </div>
+    
+<form  action="#" th:action="@{/sendMessage}" th:object="${message}" class="w-full max-w-sm"
+	method="POST">
+  <div class="flex items-center border-b border-teal-500 py-2">
+    <input th:field="*{message}" class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none" type="text" placeholder="Jane Doe" aria-label="Full name">
+    <button type="submit" class="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded">
+      Send Message
+    </button>
+  </div>
+</form>
+	
+
+<section class="min-h-screen body-font text-gray-600 ">
+    <div class="container mx-auto px-5 py-10">
+      <div class="-m-4 flex flex-wrap">
+        <div th:each="message:${allMessages}" class="w-full p-4 md:w-1/2 lg:w-1/4">
+          <div class="max-w-md py-4 px-8 bg-white shadow-lg rounded-lg my-20">
+			  <div>
+			    <h2 th:text="${message.messageId}"  class="text-gray-800 text-3xl font-semibold"></h2>
+			    <p th:text="${message.message}"  class="mt-2 text-gray-600"></p>
+			  </div>
+			  <div class="flex justify-end mt-4">
+			    <a th:text="${message.userId}"  href="#" class="text-xl font-medium text-indigo-500"></a>
+			  </div>
+			</div>
+        </div>
+        
+        
+        
+        
+        
+        
+    </div>
+  </section>
+  
+</div>
+</body>
+</html>

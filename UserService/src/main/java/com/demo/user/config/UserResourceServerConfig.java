@@ -27,7 +27,11 @@ public class UserResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers(HttpMethod.GET,"/users/**").hasAuthority("read_users")
                 .antMatchers(HttpMethod.POST,"/users/**").hasAuthority("create_user")
                 .antMatchers(HttpMethod.DELETE,"/users/**").hasAuthority("delete_user")
-                .antMatchers(HttpMethod.PUT,"/users/**").hasAuthority("update_user")           
+                .antMatchers(HttpMethod.PUT,"/users/**").hasAuthority("update_user")    
+                .antMatchers(HttpMethod.GET,"/messages/**").hasAuthority("read_message")
+                .antMatchers(HttpMethod.POST,"/messages/**").hasAuthority("create_message")
+                .antMatchers(HttpMethod.DELETE,"/messages/**").hasAuthority("update_message")
+                .antMatchers(HttpMethod.PUT,"/messages/**").hasAuthority("delete_message")  
                 .anyRequest()
                 .authenticated()
                 .and().exceptionHandling().accessDeniedHandler(new OAuth2AccessDeniedHandler());

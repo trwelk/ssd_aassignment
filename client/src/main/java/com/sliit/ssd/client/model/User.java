@@ -29,21 +29,10 @@ public class User implements Serializable {
 	
 	private String emailId;
 	
+	private int roleId;
 	
 	private Role role;
 	
-//	@ManyToMany(mappedBy = "consumers", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-//	private Set<Utility> utilitites;
-	
-	
-	
-	private Integer contactNumber;
-	
-	
-	private Integer rating;
-	
-	
-	private Date dateOfRegistration;
 
 	public User() {
 		super();
@@ -54,7 +43,6 @@ public class User implements Serializable {
 		this.userId = userId;
 		this.userName = userName;
 		this.password=password;
-		this.dateOfRegistration = Calendar.getInstance().getTime();
 		
 	}
 	
@@ -62,9 +50,6 @@ public class User implements Serializable {
 		
 		this.userName = userName;
 		this.password=password;
-		this.dateOfRegistration = Calendar.getInstance().getTime();
-		this.contactNumber =54323;
-		this.rating = 0;
 	}
 
 	public User (User user) {
@@ -74,11 +59,9 @@ public class User implements Serializable {
 		this.password=user.getPassword();
 		this.userType = user.getUserType();
 		this.emailId = user.getEmailId();
-		this.contactNumber = user.getContactNumber();
-		this.rating = user.getRating();
-		this.dateOfRegistration = user.getDateOfRegistration();
 		this.role=user.getRoles();
 	}
+	
 
 	public int getUserId() {
 		return userId;
@@ -87,6 +70,18 @@ public class User implements Serializable {
 	public void setUserId(int userId) {
 		this.userId = userId;
 	}
+	
+	
+
+	public int getRoleId() {
+		return roleId;
+	}
+
+
+	public void setRoleId(int roleId) {
+		this.roleId = roleId;
+	}
+
 
 	public String getUserName() {
 		return userName;
@@ -112,30 +107,6 @@ public class User implements Serializable {
 		this.emailId = emailId;
 	}
 
-	public int getContactNumber() {
-		return contactNumber;
-	}
-
-	public void setContactNumber(int contactNumber) {
-		this.contactNumber = contactNumber;
-	}
-
-	public int getRating() {
-		return rating;
-	}
-
-	public void setRating(int rating) {
-		this.rating = rating;
-	}
-
-	public Date getDateOfRegistration() {
-		return dateOfRegistration;
-	}
-
-	public void setDateOfRegistration(Date dateOfRegistration) {
-		this.dateOfRegistration = dateOfRegistration;
-	}
-		
 	public String getPassword() {
 		return password;
 	}
